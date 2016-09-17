@@ -54,7 +54,6 @@ view model =
           Loading url -> loadingImage url
     in node "div" [] (map f model)
 
-
 readyImage : Url -> Html Msg
 readyImage url =
     let attrs = [ src url, style [ ( "float", "left" ) ] ]

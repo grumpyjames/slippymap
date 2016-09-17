@@ -65,10 +65,10 @@ update msg model =
 
 complete : Url -> Model -> Model
 complete url model = 
-    let f li = 
-        case li of 
-          Ready _ -> li
-          Loading u -> if u==url then Ready u else li
+    let f lazyImage = 
+        case lazyImage of 
+          Ready _ -> lazyImage
+          Loading loadingUrl -> if loadingUrl == url then Ready url else lazyImage
     in map f model
 </code>
 
@@ -78,15 +78,15 @@ images are simple enough:
 <code>
 view : Model -> Html Msg
 view model = 
-    let f li =
-        case li of
-          Ready u -> readyImage u
-          Loading u -> loadingImage u
+    let f lazyImage =
+        case lazyImage of
+          Ready url -> readyImage url
+          Loading url -> loadingImage url
     in node "div" [] (map f model)
 
 readyImage : Url -> Html Msg
-readyImage u =
-    let attrs = [ src u, style [ ( "float", "left" ) ] ]
+readyImage url =
+    let attrs = [ src url, style [ ( "float", "left" ) ] ]
     in img attrs [] 
 </code>
 
@@ -99,16 +99,16 @@ understand.
 
 <code>
 loadingImage : Url -> Html Msg
-loadingImage u =
+loadingImage url =
     let 
         loadingGifAttrs = 
             [ src "loading.gif"
             , style [ ( "float", "left" ) ]
             ]
         loadingImageAttrs = 
-            [ src u
+            [ src url
             , style [ ("display", "none" ) ]
-            , onWithOptions "load" (Options False False) (succeed (Complete u))
+            , onWithOptions "load" (Options False False) (succeed (Complete url))
             ]
     in node "div" [] [(img loadingGifAttrs []), (img loadingImageAttrs [])]
 </code>
@@ -120,4 +120,4 @@ main =
   App.beginnerProgram { model = model, view = view, update = update }
 </code>
 
-The output can be found [here](where?)
+...and we're done.
