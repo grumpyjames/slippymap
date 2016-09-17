@@ -7868,10 +7868,10 @@ var _elm_lang$html$Html_Events$Options = F2(
 	function (a, b) {
 		return {stopPropagation: a, preventDefault: b};
 	});
-var _grumpyjames$lazyloader$LazyLoader$readyImage = function (u) {
+var _grumpyjames$lazyloader$LazyLoader$readyImage = function (url) {
 	var attrs = _elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html_Attributes$src(u),
+			_elm_lang$html$Html_Attributes$src(url),
 			_elm_lang$html$Html_Attributes$style(
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -7889,21 +7889,20 @@ var _grumpyjames$lazyloader$LazyLoader$Ready = function (a) {
 };
 var _grumpyjames$lazyloader$LazyLoader$complete = F2(
 	function (url, model) {
-		var f = function (li) {
-			var _p0 = li;
+		var f = function (lazyImage) {
+			var _p0 = lazyImage;
 			if (_p0.ctor === 'Ready') {
-				return li;
+				return lazyImage;
 			} else {
-				var _p1 = _p0._0;
-				return _elm_lang$core$Native_Utils.eq(_p1, url) ? _grumpyjames$lazyloader$LazyLoader$Ready(_p1) : li;
+				return _elm_lang$core$Native_Utils.eq(_p0._0, url) ? _grumpyjames$lazyloader$LazyLoader$Ready(url) : lazyImage;
 			}
 		};
 		return A2(_elm_lang$core$List$map, f, model);
 	});
 var _grumpyjames$lazyloader$LazyLoader$update = F2(
 	function (msg, model) {
-		var _p2 = msg;
-		return A2(_grumpyjames$lazyloader$LazyLoader$complete, _p2._0, model);
+		var _p1 = msg;
+		return A2(_grumpyjames$lazyloader$LazyLoader$complete, _p1._0, model);
 	});
 var _grumpyjames$lazyloader$LazyLoader$Loading = function (a) {
 	return {ctor: 'Loading', _0: a};
@@ -7921,10 +7920,10 @@ var _grumpyjames$lazyloader$LazyLoader$model = _elm_lang$core$Native_List.fromAr
 var _grumpyjames$lazyloader$LazyLoader$Complete = function (a) {
 	return {ctor: 'Complete', _0: a};
 };
-var _grumpyjames$lazyloader$LazyLoader$loadingImage = function (u) {
+var _grumpyjames$lazyloader$LazyLoader$loadingImage = function (url) {
 	var loadingImageAttrs = _elm_lang$core$Native_List.fromArray(
 		[
-			_elm_lang$html$Html_Attributes$src(u),
+			_elm_lang$html$Html_Attributes$src(url),
 			_elm_lang$html$Html_Attributes$style(
 			_elm_lang$core$Native_List.fromArray(
 				[
@@ -7935,7 +7934,7 @@ var _grumpyjames$lazyloader$LazyLoader$loadingImage = function (u) {
 			'load',
 			A2(_elm_lang$html$Html_Events$Options, false, false),
 			_elm_lang$core$Json_Decode$succeed(
-				_grumpyjames$lazyloader$LazyLoader$Complete(u)))
+				_grumpyjames$lazyloader$LazyLoader$Complete(url)))
 		]);
 	var loadingGifAttrs = _elm_lang$core$Native_List.fromArray(
 		[
@@ -7966,12 +7965,12 @@ var _grumpyjames$lazyloader$LazyLoader$loadingImage = function (u) {
 			]));
 };
 var _grumpyjames$lazyloader$LazyLoader$view = function (model) {
-	var f = function (li) {
-		var _p3 = li;
-		if (_p3.ctor === 'Ready') {
-			return _grumpyjames$lazyloader$LazyLoader$readyImage(_p3._0);
+	var f = function (lazyImage) {
+		var _p2 = lazyImage;
+		if (_p2.ctor === 'Ready') {
+			return _grumpyjames$lazyloader$LazyLoader$readyImage(_p2._0);
 		} else {
-			return _grumpyjames$lazyloader$LazyLoader$loadingImage(_p3._0);
+			return _grumpyjames$lazyloader$LazyLoader$loadingImage(_p2._0);
 		}
 	};
 	return A3(
