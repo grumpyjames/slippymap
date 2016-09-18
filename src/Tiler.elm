@@ -15,16 +15,16 @@ type alias TilingInstruction a =
     { rowCount: Int
     , columnCount: Int
     , origin: Tile
-    , renderer: Tile -> Html a
+    , view: Tile -> Html a
     }
 
 tile : TilingInstruction a -> Html a
 tile instruction = 
-    Html.div [] (List.map (row instruction.renderer) (rows instruction))
+    Html.div [] (List.map (viewRow instruction.view) (rows instruction))
 
-row : (Tile -> Html a) -> List Tile -> Html a
-row renderer tiles =
-    Html.div [] (List.map renderer tiles)
+viewRow : (Tile -> Html a) -> List Tile -> Html a
+viewRow view tiles =
+    Html.div [] (List.map view tiles)
 
 rows : TilingInstruction a -> List (List Tile)
 rows instruction =

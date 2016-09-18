@@ -1,6 +1,8 @@
-A while back, I wrote a map tiling library in elm. Why? Because
-interop is always a pain, and I wanted to write an elm application
-that was heavily dependent on geographic data.
+### Previously, on misguided elm experiments:
+
+I wrote a mapping library! Why? Because interop is always a pain, and
+I wanted to write an elm application that was heavily dependent on
+geographic data.
 
 At the time, I got the implementation to 'good enough' and then got on
 with writing the app. In case anyone was interested, I stuck a
@@ -120,4 +122,5 @@ main =
   App.beginnerProgram { model = model, view = view, update = update }
 </code>
 
-...and we're done.
+...and we're done. Next time, we'll break off another piece we'll need
+to rebuild: a tiling function.

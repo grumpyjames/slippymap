@@ -14,7 +14,7 @@ describe tile =
     Html.text ("(" ++ (toString tile.x) ++ ", " ++ (toString tile.y) ++ ")") 
 
 model =
-    TilingInstruction 3 5 (Tiler.Tile 3 5) wordy 
+    TilingInstruction 3 5 (Tiler.Tile 3 5) describe
 
 update : Msg -> Model -> Model
 update message model = model
