@@ -1,4 +1,4 @@
-module TilerDemo exposing (main)
+module MapTilerDemo exposing (main)
 
 import Dict exposing (Dict)
 import Html exposing (Html, img, node)
