@@ -19,7 +19,14 @@ type alias Model =
     , images : Dict (Int, Int) Url
     }
 
+type Direction
+    = Up
+    | Down
+    | Left
+    | Right
+
 type Msg = Complete (Int, Int) Url
+         | Shift Direction
 
 imageUrl : Tiler.Tile -> Url
 imageUrl tile = 
@@ -67,15 +74,36 @@ model =
     , images = Dict.empty
     }
 
+shift : (Int, Int) -> Tiler.Tile -> Tiler.Tile
+shift (dx, dy) tile =
+    Tiler.Tile (tile.x + dx) (tile.y + dy) 
+
 update : Msg -> Model -> Model
 update message model =
     case message of
       Complete key value ->
           { model | images = Dict.insert key value model.images }
+      Shift d -> 
+          case d of
+            Up -> { model | origin = shift (0, -1) model.origin }
+            Down -> { model | origin = shift (0, 1) model.origin }
+            Left -> { model | origin = shift (-1, 0) model.origin }
+            Right -> { model | origin = shift (1, 0) model.origin }
 
 view : Model -> Html Msg
 view m =
-    Tiler.tile (TilingInstruction m.rowCount m.columnCount m.origin (loadingTileImages m.images))
+    let tiles = Tiler.tile (TilingInstruction m.rowCount m.columnCount m.origin (loadingTileImages m.images))
+    in Html.div [] [controls, tiles]
+
+controls : Html Msg
+controls = 
+    let 
+        shiftButton shift text = Html.button [(Html.Events.on "click" (succeed (Shift shift)))] [Html.text text]
+        upButton = shiftButton Up "North"
+        downButton = shiftButton Down "South"
+        leftButton = shiftButton Left "West"
+        rightButton = shiftButton Right "East"
+    in Html.div [] [upButton, downButton, leftButton, rightButton]
 
 main = 
     App.beginnerProgram { model = model
