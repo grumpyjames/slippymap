@@ -1,15 +1,13 @@
 ### A generic tiling function in elm
 
-As far as I know, all the popular web mapping solutions are
-underpinned by a collection of tiles. The map of the globe (usually in
-a
+Typically in map applications, the world (as represented by a
 [web mercator projection](https://en.wikipedia.org/wiki/Web_Mercator))
 is split into a number of square tiles, the precise number depending
 on how closely we're looking at the map.
 
-Typically each tile is a separate image (although there are movements
-towards serving vector information and rendering to SVG, this is far
-too modern for my tiny brain so I will deny their existence for now) -
+Each tile is a separate image (although there are movements towards
+serving vector information and rendering to SVG, this is far too
+modern for my tiny brain so I will deny their existence for now) -
 drawing a large map usually means requesting several images and tiling
 them.
 
@@ -18,6 +16,7 @@ a tiny tiling implementation to form the next step.
 
 ### Abstractions I made earlier
 
+<pre>
 <code>
 type alias Tile =
     { x: Int
@@ -31,6 +30,7 @@ type alias TilingInstruction a =
     , view: Tile -> Html a
     }
 </code>
+</pre>
 
 We don't necessarily want our tiler to know precisely what tiles it is
 going to be arranging, so we create this generic definition of a tile,
@@ -45,6 +45,7 @@ strangely satisfying about looking at output in a web browser.
 
 It is small:
 
+<pre>
 <code>
 tile : TilingInstruction a -> Html a
 tile instruction = 
@@ -67,14 +68,17 @@ mapTwo : (a -> b -> c) -> List a -> List b -> List (List c)
 mapTwo f xs ys =
     List.map (\y -> List.map (\x -> (f x y)) xs) ys
 </code>
+</pre>
 
-Mostly the implementation is list functions, with a little bit of
-arranging the results of `view` into appropriate `div`s. This makes me
-feel like the choice of abstractions was either excellent, or too low;
-only time will tell.
+Mostly the implementation is list functions (I admit, I stole mapTwo
+from an elm mailing list suggestion; neat, isn't it?), with a little
+bit of arranging the results of `view` into appropriate `div`s. This
+makes me feel like the choice of abstractions was either excellent, or
+too low; only time will tell.
 
 ### A demonstration
 
+<pre>
 <code>
 import Html exposing (Html)
 import Html.App as App
@@ -101,6 +105,7 @@ main =
                         , update = update
                         }
 </code>
+</pre>
 
 The vast majority of this code is ceremonial - most of our view
 function is already implemented in `Tiler`, so we just create a tile
@@ -108,3 +113,5 @@ view function that lets us know the co-ordinates of a given tile, so
 we can quickly check that things are working. Our demo doesn't have
 any events, so a single `NoOp` `Msg` type alias is all we'll need
 there.
+
+We can see the results [here](demo-2.1.html)
