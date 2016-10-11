@@ -137,3 +137,22 @@ have to do some more work.
 To cut a long story short, the `div` that the `Tiler` creates to house
 each row of tiles will need to be given an explicit width to prevent
 non-fitting tile images from skipping on to the next line. Ugh.
+
+### Widening `TilingInstruction`
+
+<pre><code>
+type alias TilingInstruction a = 
+    { rowCount: Int
+    , columnCount: Int
+    , origin: Tile
+    , viewTile: Tile -> Html a
+    , viewRow: List (Html a) -> Html a
+    }
+</code><pre>
+
+Previously, our `tile` function handily dropped our elements into
+appropriate `div`s and we were done. Now we have to get each row's
+`div` to have a fixed width, so we pass a row viewer, as well as a
+tile viewer. We should probably think about whether `tile` really
+wants to know about `Html` at some point, but this was the easiest way
+to get things to work in any given browser window for this post...

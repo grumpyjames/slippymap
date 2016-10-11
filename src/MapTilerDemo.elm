@@ -112,7 +112,10 @@ view m =
 controls : Html Msg
 controls = 
     let 
-        shiftButton shift text = Html.button [(Html.Events.on "click" (succeed (Shift shift)))] [Html.text text]
+        shiftButton shift text = 
+            Html.button 
+                [(Html.Events.on "click" (succeed (Shift shift)))] 
+                [Html.text text]
         upButton = shiftButton Up "North"
         downButton = shiftButton Down "South"
         leftButton = shiftButton Left "West"
