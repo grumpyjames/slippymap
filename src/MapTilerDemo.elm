@@ -90,9 +90,23 @@ update message model =
             Left -> { model | origin = shift (-1, 0) model.origin }
             Right -> { model | origin = shift (1, 0) model.origin }
 
+px : Int -> String
+px pixels = (toString pixels) ++ "px"
+
+fixedWidth : List (Html a) -> Html a
+fixedWidth htmls = 
+    let width = (List.length htmls) * 256
+    in Html.div [style [("width", (px width))]] htmls
+
 view : Model -> Html Msg
 view m =
-    let tiles = Tiler.tile (TilingInstruction m.rowCount m.columnCount m.origin (loadingTileImages m.images))
+    let tiles = 
+            Tiler.tile { rowCount = m.rowCount
+                       , columnCount = m.columnCount
+                       , origin = m.origin
+                       , viewTile = (loadingTileImages m.images)
+                       , viewRow = fixedWidth
+                       }
     in Html.div [] [controls, tiles]
 
 controls : Html Msg

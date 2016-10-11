@@ -76,7 +76,7 @@ bit of arranging the results of `view` into appropriate `div`s. This
 makes me feel like the choice of abstractions was either excellent, or
 too low; only time will tell.
 
-### A demonstration
+### A simple proof of concept
 
 <pre>
 <code>
@@ -115,3 +115,14 @@ any events, so a single `NoOp` `Msg` type alias is all we'll need
 there.
 
 We can see the results [here](demo-2.1.html)
+
+Barring the rather crude coordinate system (sorry, fellow
+mathematicians - web mercator made me do it), this looks like a good
+start.
+
+### The way forward
+
+We have two components (Ed: 'components'? they look more like a
+collection of functions to me...); a lazy image loader, and a
+tiler. How easily can we combine them? We'll find out in the next
+instalment.
