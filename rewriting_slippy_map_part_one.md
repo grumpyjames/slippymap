@@ -134,5 +134,5 @@ main =
 </code>
 </pre>
 
-...and we're done. Next time, we'll break off another piece we'll need
+...and we're done, demo [here](demo-1.html). Next time, we'll break off another piece we'll need
 to rebuild: a tiling function.
