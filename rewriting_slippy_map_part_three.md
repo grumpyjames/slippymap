@@ -129,9 +129,9 @@ how to craft a `URL` that corresponds to appropriate web mercator
 tiles source from [MapBox](http://www.mapbox.com), and we'll have our
 next demo.
 
-Author's note: an extended battle with html/css followed here after
+Author's note: an extended battle with HTML/CSS followed here after
 realising that this demo worked rather poorly on viewports with a
-width smaller than 1024px. Html/css won, so we're going to
+width smaller than 1024px. HTML/CSS won, so we're going to
 have to do some more work.
 
 To cut a long story short, the `div` that the `Tiler` creates to house
@@ -148,11 +148,36 @@ type alias TilingInstruction a =
     , viewTile: Tile -> Html a
     , viewRow: List (Html a) -> Html a
     }
-</code><pre>
+</code></pre>
 
 Previously, our `tile` function handily dropped our elements into
 appropriate `div`s and we were done. Now we have to get each row's
 `div` to have a fixed width, so we pass a row viewer, as well as a
 tile viewer. We should probably think about whether `tile` really
 wants to know about `Html` at some point, but this was the easiest way
-to get things to work in any given browser window for this post...
+to get things to work in any given browser window for this post.
+
+Here's what our `view` function looks like now:
+
+<pre><code>
+view : Model -> Html Msg
+view m =
+    let tiles = 
+            Tiler.tile { rowCount = m.rowCount
+                       , columnCount = m.columnCount
+                       , origin = m.origin
+                       , viewTile = (loadingTileImages m.images)
+                       , viewRow = fixedWidth
+                       }
+    in Html.div [] [controls, tiles]
+
+px : Int -> String
+px pixels = (toString pixels) ++ "px"
+
+fixedWidth : List (Html a) -> Html a
+fixedWidth htmls = 
+    let width = (List.length htmls) * 256
+    in Html.div [style [("width", (px width))]] htmls
+</code></pre>
+
+...and finally, here is the [demo](demo-3.1.html)

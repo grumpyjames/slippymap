@@ -6,7 +6,7 @@ geographic data.
 
 At the time, I got the implementation to 'good enough' and then got on
 with writing the app. In case anyone was interested, I stuck a
-[demo](http://grumpyjames.github.io/) on the internet and left a link
+[demo](old-and-bad.html) on the internet and left a link
 on the elm mailing list. A great lack of interest followed.
 
 A year or so later, I find myself again wanting an elm map layer. Elm
