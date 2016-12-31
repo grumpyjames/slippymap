@@ -35,8 +35,7 @@ image.
 
 Here's the representation of our state:
 
-<pre>
-<code>
+~~~~ {.haskell}
 
 type alias Url = String
 
@@ -46,25 +45,21 @@ type LazyImage = Loading Url
 type alias Model =
     List LazyImage
 
-</code>
-</pre>
+~~~~
 
 Here are the events we expect to be dealing with, and how we'll update
 our state based on them. This is a very simple declaration; the only
 event we'll be sending lets us know that a particular url has finished
 loading.
 
-<pre>
-<code>
+~~~~ {.haskell}
 type Msg = Complete Url
-</code>
-</pre>
+~~~~
 
 Here's how we'll update our model - when a 'Complete' event, arrives,
 we'll update any `Loading` image that matches that url to be `Ready`.
 
-<pre>
-<code>
+~~~~ {.haskell}
 update : Msg -> Model -> Model
 update msg model =
   case msg of
@@ -77,14 +72,12 @@ complete url model =
           Ready _ -> lazyImage
           Loading loadingUrl -> if loadingUrl == url then Ready url else lazyImage
     in map f model
-</code>
-</pre>
+~~~~
 
 ...and here's how we'll render our state. The parts to show the ready
 images are simple enough:
 
-<pre>
-<code>
+~~~~ {.haskell}
 view : Model -> Html Msg
 view model = 
     let f lazyImage =
@@ -97,8 +90,7 @@ readyImage : Url -> Html Msg
 readyImage url =
     let attrs = [ src url, style [ ( "float", "left" ) ] ]
     in img attrs [] 
-</code>
-</pre>
+~~~~
 
 ...it's only when we deal with the loading images that things get a
 little crafty. We choose to generate two `img` tags. Only the first, a
@@ -107,8 +99,7 @@ to it, but don't display it. Finally, we hook into that image's `load`
 event, converting it into an event that our elm application can
 understand.
 
-<pre>
-<code>
+~~~~ {.haskell}
 loadingImage : Url -> Html Msg
 loadingImage url =
     let 
@@ -122,17 +113,16 @@ loadingImage url =
             , onWithOptions "load" (Options False False) (succeed (Complete url))
             ]
     in node "div" [] [(img loadingGifAttrs []), (img loadingImageAttrs [])]
-</code>
-</pre>
+~~~~
 
 Finally, we tie together our model, events and view into an application:
 
-<pre
-<code>
+~~~~ {.haskell}
+
 main =
   App.beginnerProgram { model = model, view = view, update = update }
-</code>
-</pre>
+
+~~~~
 
 ...and we're done, demo [here](demo-1.html). Next time, we'll break off another piece we'll need
 to rebuild: a tiling function.

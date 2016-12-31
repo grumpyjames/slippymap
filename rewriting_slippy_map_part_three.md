@@ -13,45 +13,56 @@ the resulting tiling.
 
 Let's have a think about how to do this.
 
-<pre><code>
+~~~~ {.haskell}
+
+type alias Tile =
+    { x: Int
+    , y: Int
+    }
+
 type alias TilingInstruction a = 
     { rowCount: Int
     , columnCount: Int
     , origin: Tile
     , view: Tile -> Html a
     }
-</code></pre>
+~~~~
 
 It's clear that most of our change, from the previous demo, is going
 to be in the implementation of `view`. We'll also hold on to a bit
 more state in our model, which looks like this.
 
-<pre><code>
+Author's note: somewhere in this post, a lot of `tile` related code
+got moved into a `Tiler` module.
+
+~~~~ {.haskell}
+
 type alias Model = 
     { rowCount: Int
     , columnCount: Int
     , origin: Tiler.Tile
     , loadedImages : Dict (Int, Int) Url
     }
-</pre></code>
+
+~~~~
 
 The events we're going to handle will also widen a little; we'll add
 the co-ordinate of the tile to the 'image loaded' event, and we'll
 also add an event to encapsulate a shift in the map's origin.
 
-<pre><code>
+~~~~ {.haskell}
 type Msg = Complete (Int, Int) Url
          | Shift (Int, Int)
-</pre></code>
+~~~~
 
 Let's look at how we define our view.
 
-<pre><code>
+~~~~ {.haskell}
 view : Model -> Html Msg
 view m =
     let tiles = Tiler.tile (TilingInstruction m.rowCount m.columnCount m.origin (loadingTileImages m.loadedImages))
     in Html.div [] [controls, tiles]
-</code></pre>
+~~~~
 
 We'll have some controls, and some tiles. The tiles are the bit we're
 interested in. We're invoking exactly the same `tile` function that
@@ -62,7 +73,7 @@ The type of `view` in `TilingInstruction` is `Tile -> Html a`. It
 looks like `loadingTileImages m.loadedImages`. is going to have to be
 pretty clever.
 
-<pre><code>
+~~~~ {.haskell}
 loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html Msg
 loadingTileImages cache tile =
     let lookup = Dict.get (tile.x, tile.y) cache
@@ -70,7 +81,7 @@ loadingTileImages cache tile =
       case lookup of
         Just url -> readyImage url
         Nothing -> loadingImage (tile.x, tile.y) (imageUrl tile)
-</code></pre>
+~~~~
 
 ...handily though, it is actually quite simple: we're _partially
 applying_ this function, binding the loading images into place for
@@ -82,26 +93,30 @@ Our definitions of `loadingImage` and `readyImage` are very similar to
 the original `LazyLoader` demo with the following difference:
 
 Before:
-<pre><code>onWithOptions "load" (Options False False) (succeed (Complete url))</code></pre>
+~~~~ {.haskell}
+onWithOptions "load" (Options False False) (succeed (Complete url))
+~~~~
 
 After:
-<pre><code>onWithOptions "load" (Options False False) (succeed (Complete coordinate url))</code></pre>
+~~~~ {.haskell}
+onWithOptions "load" (Options False False) (succeed (Complete coordinate url))
+~~~~
 
 This way, when the load event arrives, handling it is much simpler.
 
-<pre><code>
+~~~~ {.haskell}
 update : Msg -> Model -> Model
 update message model =
     case message of
       Complete key value ->
           { model | loadedImages = Dict.insert key value model.loadedImages }
-</code></pre>
+~~~~
 
 Very simple.
 
 Adding the controls is...tedious but effective:
 
-<pre><code>
+~~~~ {.haskell}
 controls : Html Msg
 controls = 
     let shiftButton shift text = Html.button [(Html.Events.on "click" (succeed (Shift shift)))] [Html.text text]
@@ -110,19 +125,19 @@ controls =
         leftButton = shiftButton (-1, 0) "West"
         rightButton = shiftButton (1, 0) "East"
     in Html.div [] [upButton, downButton, leftButton, rightButton]
-</code></pre>
+~~~~
 
 ...and handling the `Shift` messages this sends is again trivial,
 here's the other half of our update function:
 
-<pre><code>
+~~~~ {.haskell}
       Shift diff -> 
           { model | origin = shift diff model.origin }
 
 shift : (Int, Int) -> Tiler.Tile -> Tiler.Tile
 shift (dx, dy) tile =
     Tiler.Tile (tile.x + dx) (tile.y + dy) 
-</code></pre>
+~~~~
 
 We'll provide a function, `imageUrl : Tiler.Tile -> Url`, that knows
 how to craft a `URL` that corresponds to appropriate web mercator
@@ -140,7 +155,7 @@ non-fitting tile images from skipping on to the next line. Ugh.
 
 ### Widening `TilingInstruction`
 
-<pre><code>
+~~~~ {.haskell}
 type alias TilingInstruction a = 
     { rowCount: Int
     , columnCount: Int
@@ -148,7 +163,7 @@ type alias TilingInstruction a =
     , viewTile: Tile -> Html a
     , viewRow: List (Html a) -> Html a
     }
-</code></pre>
+~~~~
 
 Previously, our `tile` function handily dropped our elements into
 appropriate `div`s and we were done. Now we have to get each row's
@@ -159,7 +174,7 @@ to get things to work in any given browser window for this post.
 
 Here's what our `view` function looks like now:
 
-<pre><code>
+~~~~ {.haskell}
 view : Model -> Html Msg
 view m =
     let tiles = 
@@ -178,6 +193,6 @@ fixedWidth : List (Html a) -> Html a
 fixedWidth htmls = 
     let width = (List.length htmls) * 256
     in Html.div [style [("width", (px width))]] htmls
-</code></pre>
+~~~~
 
 ...and finally, here is the [demo](demo-3.1.html)

@@ -10,10 +10,10 @@ For me, elm is the answer to the following series of questions:
 
 1. Can't we write just reliable webapps in javascript?
 
-Yes, but it is _hard_. `undefined` is not a `function`, we hear.
+   Yes, but it is _hard_. `undefined` is not a `function`, we hear.
 
-It's hard enough that a great deal of effort has been expended
-creating build pipelines for javascript webapps to make things easier.
+   It's hard enough that a great deal of effort has been expended
+   creating build pipelines for javascript webapps to make things easier.
 
 2. Wait, _build_ pipelines?
 
@@ -49,7 +49,7 @@ You'll note that the return type of `view` is parameterized by our event type. T
 
 Under the covers, elm is running an event loop something like this:
 
-<pre><code>
+~~~~ {.javascript}
 var model = initialModel;
 var currentView = view(initialModel);
 applyToDom(currentView);
@@ -60,7 +60,7 @@ while (true) {
     applyDiffToDom(diff(currentView, newView));
     currentView = newView;
 }
-</code></pre>
+~~~~
 
 I've represented that in terrible javascript pseudocode in the spirit
 of comprehensibility. I suspect that in reality there is not a queue,

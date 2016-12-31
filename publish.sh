@@ -4,8 +4,7 @@
 
 function to_html()
 {
-    markdown < $1 > build/tmp.html
-    cat header.html build/tmp.html footer.html > build/$2
+    pandoc -s -f markdown -t html --highlight-style pygments $1 > build/$2
 }
 
 to_html "index.md" "index.html"

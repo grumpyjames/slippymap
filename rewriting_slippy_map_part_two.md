@@ -16,8 +16,8 @@ a tiny tiling implementation to form the next step.
 
 ### Abstractions I made earlier
 
-<pre>
-<code>
+~~~~ {.haskell}
+
 type alias Tile =
     { x: Int
     , y: Int
@@ -29,8 +29,8 @@ type alias TilingInstruction a =
     , origin: Tile
     , view: Tile -> Html a
     }
-</code>
-</pre>
+
+~~~~
 
 We don't necessarily want our tiler to know precisely what tiles it is
 going to be arranging, so we create this generic definition of a tile,
@@ -45,8 +45,8 @@ strangely satisfying about looking at output in a web browser.
 
 It is small:
 
-<pre>
-<code>
+~~~~ {.haskell}
+
 tile : TilingInstruction a -> Html a
 tile instruction = 
     Html.div [] (List.map (viewRow instruction.view) (rows instruction))
@@ -67,8 +67,8 @@ range origin count = [origin..(origin + count - 1)]
 mapTwo : (a -> b -> c) -> List a -> List b -> List (List c)
 mapTwo f xs ys =
     List.map (\y -> List.map (\x -> (f x y)) xs) ys
-</code>
-</pre>
+
+~~~~
 
 Mostly the implementation is list functions (I admit, I stole mapTwo
 from an elm mailing list suggestion; neat, isn't it?), with a little
@@ -78,8 +78,7 @@ too low; only time will tell.
 
 ### A simple proof of concept
 
-<pre>
-<code>
+~~~~ {.haskell}
 import Html exposing (Html)
 import Html.App as App
 
@@ -104,8 +103,8 @@ main =
                         , view = Tiler.tile
                         , update = update
                         }
-</code>
-</pre>
+
+~~~~
 
 The vast majority of this code is ceremonial - most of our view
 function is already implemented in `Tiler`, so we just create a tile
