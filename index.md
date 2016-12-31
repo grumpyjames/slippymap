@@ -21,6 +21,7 @@ You should always be able find the latest code, including the markdown source fo
 
 The content, in `n` parts
 
+0. [What is elm?](zero.html)
 1. [A lazy image loader](one.html)
 2. [A tiling function](two.html)
 3. [Composing 1 and 2: Lazily loading a tiled map](three.html)
