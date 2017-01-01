@@ -93,11 +93,13 @@ Our definitions of `loadingImage` and `readyImage` are very similar to
 the original `LazyLoader` demo with the following difference:
 
 Before:
+
 ~~~~ {.haskell}
 onWithOptions "load" (Options False False) (succeed (Complete url))
 ~~~~
 
 After:
+
 ~~~~ {.haskell}
 onWithOptions "load" (Options False False) (succeed (Complete coordinate url))
 ~~~~
