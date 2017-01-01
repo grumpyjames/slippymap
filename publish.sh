@@ -19,5 +19,6 @@ to_html "rewriting_slippy_map_part_three.md" "three.html"
 elm-make src/MapTilerDemo.elm --output build/demo-3.1.html
 to_html "rewriting_slippy_map_part_four.md" "four.html"
 elm-make src/LocatorDemo.elm --output build/demo-4.1.html
+elm-make src/XMarksTheSpot.elm --output build/demo-4.2.html
 cp old-and-bad.html build/old-and-bad.html
 cp old-and-bad.js build/old-and-bad.js

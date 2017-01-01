@@ -5,9 +5,11 @@ can even navigate a little bit, so long as we are prepared to only
 ever move in units of tile.
 
 Our next step is to cope with moving around in a finer grained unit
-than the tile. We'll approach this in two parts; rendering a fixed
-size map centred on a particular location, and then making the centre
-movable.
+than the tile. We'll approach this in three parts:
+
+1. Working out in what tile (and whereabouts within the tile) the centre is.
+2. Rendering a fixed size map centred on a particular location.
+3. Making the centre movable.
 
 ### X marks the spot.
 
@@ -80,7 +82,7 @@ indicator to show whereabouts in the tile the precise point is.
 ~~~~ {.haskell}
 
 model = 
-    [ Place "Greenwich" (LatLn 51.4826 0)
+    [ Place "Sydney Opera House" (LatLn -33.8568 151.2153)
     , Place "Statue of Liberty" (LatLn 40.6892 -74.0445)
     , Place "Eiffel Tower" (LatLn 48.8584 2.2945)
     ]
@@ -99,7 +101,6 @@ titled: String -> Html Msg
 titled name = Html.text name
 
 image imageUrl = Html.img [src imageUrl] []
-
 ~~~~
 
 This found one issue; latitude and longitude were confused in the
@@ -107,3 +108,38 @@ locator code.
 
 With that fixed, we get the following [demo](demo-4.1.html); looks
 like our landmarks are in the tile we'd expect.
+
+### No, really, X will mark the spot in a minute
+
+We fight with CSS for a bit, then come up with the following:
+
+~~~~ {.haskell}
+viewOnePlace : Place -> Html Msg
+viewOnePlace p =
+    let tileAddress = lookup 15 p.latln
+        tileUrl = imageUrl tileAddress.tile
+    in Html.div [] [titled p.name, Html.div [] [image tileUrl, markTheSpot tileAddress.pixelWithinTile]]
+
+image imageUrl = 
+    let styles = style [("position", "relative"), ("z-index", "0")]
+    in Html.img [styles, src imageUrl] []
+
+px : Int -> String
+px i = toString i ++ "px"
+
+markTheSpot : (Int, Int) -> Html Msg
+markTheSpot (x, y) = 
+    let txt = Html.text "X"
+        styles = style [ ("position", "relative")
+                       , ("z-index", "1")
+                       , ("top", (px (y - 265)))
+                       , ("left", (px (x - 9)))]
+    in Html.div [styles] [txt]
+~~~~
+
+We've guessed that a div with just 'X' in it puts the intersection of
+the X around 9x9px into that div. We also subtract tile size from the
+'top' co-ordinate, because it works.
+
+It looks [like this](demo-4.2.html). Let's agree that those Xs are in
+the right place, and move on.

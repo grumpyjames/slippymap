@@ -25,3 +25,4 @@ The content, in `n` parts
 1. [A lazy image loader](one.html)
 2. [A tiling function](two.html)
 3. [Composing 1 and 2: Lazily loading a tiled map](three.html)
+4. [X marks the spot: Starting to centre the map](four.html)

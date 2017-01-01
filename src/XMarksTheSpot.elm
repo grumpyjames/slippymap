@@ -1,4 +1,4 @@
-module LocatorDemo exposing (main)
+module XMarksTheSpot exposing (main)
 
 import Locator exposing (LatLn, TileAddress, lookup)
 
@@ -33,12 +33,23 @@ viewOnePlace : Place -> Html Msg
 viewOnePlace p =
     let tileAddress = lookup 15 p.latln
         tileUrl = imageUrl tileAddress.tile
-    in Html.div [] [titled p.name, image tileUrl]
+    in Html.div [] [titled p.name, Html.div [] [image tileUrl, markTheSpot tileAddress.pixelWithinTile]]
 
 titled: String -> Html Msg
 titled name = Html.text name
 
-image imageUrl = Html.img [src imageUrl] []
+image imageUrl = 
+    let styles = style [("position", "relative"), ("z-index", "0")]
+    in Html.img [styles, src imageUrl] []
+
+px : Int -> String
+px i = toString i ++ "px"
+
+markTheSpot : (Int, Int) -> Html Msg
+markTheSpot (x, y) = 
+    let txt = Html.text "X"
+        styles = style [("position", "relative"), ("z-index", "1"), ("top", (px (y - 265))), ("left", (px (x - 9)))]
+    in Html.div [styles] [txt]
 
 main = 
     App.beginnerProgram { model = model
