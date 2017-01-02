@@ -8,9 +8,9 @@ import Html.Attributes exposing (style, src)
 
 import Json.Decode exposing (succeed)
 
+import LazyTiles exposing (imageUrl)
 import Tiler exposing (TilingInstruction)
-
-type alias Url = String
+import Url exposing (Url)
 
 type alias Model = 
     { rowCount: Int
@@ -27,10 +27,6 @@ type Direction
 
 type Msg = Complete (Int, Int) Url
          | Shift Direction
-
-imageUrl : Tiler.Tile -> Url
-imageUrl tile = 
-    "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/15/" ++ (toString tile.x) ++ "/" ++ (toString tile.y) ++ ".png?access_token=pk.eyJ1IjoiZ3J1bXB5amFtZXMiLCJhIjoiNWQzZjdjMDY1YTI2MjExYTQ4ZWU4YjgwZGNmNjUzZmUifQ.BpRWJBEup08Z9DJzstigvg"
 
 loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html Msg
 loadingTileImages cache tile =
@@ -70,13 +66,13 @@ loadingImage coordinate url =
 model =
     { rowCount = 3
     , columnCount = 4
-    , origin = (Tiler.Tile 16380 10890)
+    , origin = (Tiler.Tile 16380 10890 15)
     , images = Dict.empty
     }
 
 shift : (Int, Int) -> Tiler.Tile -> Tiler.Tile
 shift (dx, dy) tile =
-    Tiler.Tile (tile.x + dx) (tile.y + dy) 
+    Tiler.Tile (tile.x + dx) (tile.y + dy) tile.zoom 
 
 update : Msg -> Model -> Model
 update message model =

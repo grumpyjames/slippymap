@@ -9,6 +9,7 @@ import List
 type alias Tile =
     { x: Int
     , y: Int
+    , zoom: Int
     }
 
 type alias TilingInstruction a = 
@@ -32,7 +33,8 @@ rows : TilingInstruction a -> List (List Tile)
 rows instruction =
     let rowRange = range instruction.origin.y instruction.rowCount
         columnRange = range instruction.origin.x instruction.columnCount
-    in mapTwo Tile columnRange rowRange
+        t = \x y -> Tile x y instruction.origin.zoom
+    in mapTwo t columnRange rowRange
     
 range : Int -> Int -> List Int
 range origin count = [origin..(origin + count - 1)]

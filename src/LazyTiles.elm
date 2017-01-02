@@ -1,4 +1,7 @@
-module LazyTiles exposing (loadingTileImages, ImageLoaded)
+module LazyTiles exposing 
+    ( loadingTileImages
+    , imageUrl
+    , ImageLoaded)
 
 import Url exposing (Url)
 import Tiler
@@ -26,7 +29,11 @@ loadingTileImages cache tile =
 
 imageUrl : Tiler.Tile -> Url
 imageUrl tile = 
-    "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/15/" ++ (toString tile.x) ++ "/" ++ (toString tile.y) ++ ".png?access_token=pk.eyJ1IjoiZ3J1bXB5amFtZXMiLCJhIjoiNWQzZjdjMDY1YTI2MjExYTQ4ZWU4YjgwZGNmNjUzZmUifQ.BpRWJBEup08Z9DJzstigvg"
+    "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/" 
+    ++ (toString tile.zoom) ++ "/"
+    ++ (toString tile.x) ++ "/"
+    ++ (toString tile.y) 
+    ++ ".png?access_token=pk.eyJ1IjoiZ3J1bXB5amFtZXMiLCJhIjoiNWQzZjdjMDY1YTI2MjExYTQ4ZWU4YjgwZGNmNjUzZmUifQ.BpRWJBEup08Z9DJzstigvg"
 
 readyImage : Url -> Html ImageLoaded
 readyImage url =
