@@ -176,3 +176,85 @@ left = x // 2 - latlnx
 
 This _should_ centre our `LatLn` within the visible portion. Let's
 translate this nonsense into `elm` to see if it works.
+
+First, we extract out the lazy grid loader from part three. We let it
+own the event type it sends to avoid coupling our new demo and part
+three's demo together.
+
+~~~~ {.haskell}
+
+type alias ImageLoaded =
+    { coordinate: (Int, Int)
+    , url: Url
+    }
+
+loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html ImageLoaded
+
+~~~~
+
+See [part three](three.html) for the full details thereof.
+
+Here's most of our app:
+
+~~~~ {.haskell}
+type alias Model = 
+    { location: LatLn
+    , x: Int
+    , y: Int
+    , images : Dict (Int, Int) Url
+    }
+
+model = Model (LatLn 48.858193 2.2940533) 712 466 Dict.empty
+
+type Msg = Complete (Int, Int) Url
+
+update : Msg -> Model -> Model
+update message model = 
+    case message of
+      Complete key url ->
+          { model | images = Dict.insert key url model.images }
+
+view : Model -> Html Msg
+view model = 
+    let zoom = 15
+        tileSize = 256
+        (columnCount, rowCount) = calculateTileCount tileSize (model.x, model.y)
+        tileAddress = lookup 15 model.location
+        (centreTx, centreTy) = tileAddress.tile
+        (left, top) = calculateOffsets tileSize (model.x, model.y) (columnCount, rowCount) tileAddress.pixelWithinTile
+        tiles = Tiler.tile { rowCount = rowCount
+                           , columnCount = columnCount
+                           , origin = Tiler.Tile (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) zoom
+                           , viewTile = (loadingTileImages model.images)
+                           , viewRow = fixedWidth tileSize
+                           , outerAttributes = [ style [("position", "relative"), ("top", px top), ("left", px left)] ]
+                           }
+        lift = \imageLoaded -> Complete imageLoaded.coordinate imageLoaded.url
+    in Html.div [ style [("width", px model.x), ("height", px model.y), ("overflow", "hidden")] ] [ App.map lift tiles ]
+~~~~
+
+`App.map lift tiles` is helping us convert `LazyTiles`'s `ImageLoaded`
+type into our own `Msg` type. In two helper functions we can see the
+calculations we outlined earlier:
+
+~~~~ {.haskell}
+calculateTileCount : Int -> (Int, Int) -> (Int, Int)
+calculateTileCount tileSize (x, y) =
+    ((x // tileSize) + 3, (y // tileSize) + 3)
+
+calculateOffsets : Int -> (Int, Int) -> (Int, Int) -> (Int, Int) -> (Int, Int)
+calculateOffsets tileSize (x, y) (columnCount, rowCount) (xpixel, ypixel) =
+    let xoff = (columnCount // 2) * tileSize
+        yoff = (rowCount // 2) * tileSize
+    in
+    ( (x // 2) - (xoff + xpixel)
+    , (y // 2) - (yoff + ypixel)
+    )
+~~~~
+
+We might consider reworking `calculateOffsets` to take a type alias
+instead - it was quite tricky making sure each of those tuples was in
+the right place.
+
+The proof of the pudding is in the eating, however. Hopefully,
+[this demo](demo-5.1.html) should be centred on the Eiffel Tower.

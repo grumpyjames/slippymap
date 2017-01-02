@@ -12,7 +12,6 @@ import Html.Events exposing (onWithOptions, Options)
 import Html.Attributes exposing (style, src)
 import Json.Decode exposing (succeed)
 
-
 type alias ImageLoaded =
     { coordinate: (Int, Int)
     , url: Url
