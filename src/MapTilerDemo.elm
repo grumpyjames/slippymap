@@ -106,6 +106,7 @@ view m =
                        , origin = m.origin
                        , viewTile = (loadingTileImages m.images)
                        , viewRow = fixedWidth
+                       , outerAttributes = []
                        }
     in Html.div [] [controls, tiles]
 

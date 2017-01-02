@@ -3,7 +3,7 @@ module Tiler exposing
     , Tile
     , TilingInstruction)
 
-import Html exposing (Html)
+import Html exposing (Html, Attribute)
 import List
 
 type alias Tile =
@@ -17,11 +17,12 @@ type alias TilingInstruction a =
     , origin: Tile
     , viewTile: Tile -> Html a
     , viewRow: List (Html a) -> Html a
+    , outerAttributes: List (Attribute a)
     }
 
 tile : TilingInstruction a -> Html a
 tile instruction = 
-    Html.div [] (List.map (viewRow instruction) (rows instruction))
+    Html.div instruction.outerAttributes (List.map (viewRow instruction) (rows instruction))
 
 viewRow : TilingInstruction a -> List Tile -> Html a
 viewRow ti tiles =
