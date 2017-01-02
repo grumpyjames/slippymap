@@ -234,8 +234,14 @@ view model =
 ~~~~
 
 `App.map lift tiles` is helping us convert `LazyTiles`'s `ImageLoaded`
-type into our own `Msg` type. In two helper functions we can see the
-calculations we outlined earlier:
+type into our own `Msg` type.
+
+We quietly added `zoom` as a parameter to Tiler.Tile somewhere in this
+change; we're going to need it later, and having it hardcoded deep
+down in the image url factory was making the author unhappy.
+
+In two helper functions we can see the calculations we outlined
+earlier:
 
 ~~~~ {.haskell}
 calculateTileCount : Int -> (Int, Int) -> (Int, Int)

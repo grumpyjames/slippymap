@@ -25,7 +25,6 @@ loadingTileImages cache tile =
         Just url -> readyImage url
         Nothing -> loadingImage (tile.x, tile.y) (imageUrl tile)
 
-
 imageUrl : Tiler.Tile -> Url
 imageUrl tile = 
     "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/" 
