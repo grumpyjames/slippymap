@@ -59,7 +59,7 @@ view model =
         (left, top) = calculateOffsets tileSize (model.x, model.y) (columnCount, rowCount) tileAddress.pixelWithinTile
         tiles = Tiler.tile { rowCount = rowCount
                            , columnCount = columnCount
-                           , origin = Tiler.Tile (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2))
+                           , origin = Tiler.Tile (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) zoom
                            , viewTile = (loadingTileImages model.images)
                            , viewRow = fixedWidth tileSize
                            , outerAttributes = [ style [("position", "relative"), ("top", px top), ("left", px left)] ]
