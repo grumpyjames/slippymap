@@ -38,7 +38,7 @@ These functions take a zoom level, a latitude or longitude, and return
 a floating point x or y tile co-ordinate. The integer part refers to
 the tile's index, and the fractional part refers to the location
 within the tile. Given our tiles are `256px` squares, We'll be
-translating `4.25` as tile 4, `64px` in.
+translating `4.25` as tile `4`, `64px` in.
 
 ~~~~ {.haskell}
 
