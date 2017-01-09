@@ -26,3 +26,4 @@ The content, in `n` parts
 2. [A tiling function](two.html)
 3. [Composing 1 and 2: Lazily loading a tiled map](three.html)
 4. [X marks the spot: Starting to centre the map](four.html)
+5. [Rendering a fixed viewport centred at latln](five.html)

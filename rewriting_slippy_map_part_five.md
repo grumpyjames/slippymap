@@ -262,5 +262,4 @@ We might consider reworking `calculateOffsets` to take a type alias
 instead - it was quite tricky making sure each of those tuples was in
 the right place.
 
-The proof of the pudding is in the eating, however. Hopefully,
-[this demo](demo-5.1.html) should be centred on the Eiffel Tower.
+[The resulting demo](demo-5.1.html) should be centred on the Eiffel Tower.
