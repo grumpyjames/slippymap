@@ -1,5 +1,6 @@
 module CentreDemo exposing (main)
 
+import FixedViewport exposing (calculateDimensions, Requirements, Dimensions)
 import LazyTiles exposing (loadingTileImages)
 import Locator exposing (LatLn, TileAddress, lookup)
 import Tiler
@@ -28,19 +29,6 @@ update message model =
       Complete key url ->
           { model | images = Dict.insert key url model.images }
 
-calculateTileCount : Int -> (Int, Int) -> (Int, Int)
-calculateTileCount tileSize (x, y) =
-    ((x // tileSize) + 3, (y // tileSize) + 3)
-
-calculateOffsets : Int -> (Int, Int) -> (Int, Int) -> (Int, Int) -> (Int, Int)
-calculateOffsets tileSize (x, y) (columnCount, rowCount) (xpixel, ypixel) =
-    let xoff = (columnCount // 2) * tileSize
-        yoff = (rowCount // 2) * tileSize
-    in
-    ( (x // 2) - (xoff + xpixel)
-    , (y // 2) - (yoff + ypixel)
-    )
-
 fixedWidth : Int -> List (Html a) -> Html a
 fixedWidth tileSize htmls = 
     let width = (List.length htmls) * tileSize
@@ -53,16 +41,13 @@ view : Model -> Html Msg
 view model = 
     let zoom = 15
         tileSize = 256
-        (columnCount, rowCount) = calculateTileCount tileSize (model.x, model.y)
-        tileAddress = lookup 15 model.location
-        (centreTx, centreTy) = tileAddress.tile
-        (left, top) = calculateOffsets tileSize (model.x, model.y) (columnCount, rowCount) tileAddress.pixelWithinTile
-        tiles = Tiler.tile { rowCount = rowCount
-                           , columnCount = columnCount
-                           , origin = Tiler.Tile (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) zoom
+        dimensions = calculateDimensions (Requirements model.location zoom tileSize model.x model.y)
+        tiles = Tiler.tile { rowCount = dimensions.rowCount
+                           , columnCount = dimensions.columnCount
+                           , origin = dimensions.origin
                            , viewTile = (loadingTileImages model.images)
                            , viewRow = fixedWidth tileSize
-                           , outerAttributes = [ style [("position", "relative"), ("top", px top), ("left", px left)] ]
+                           , outerAttributes = [ style [("position", "relative"), ("top", px dimensions.top), ("left", px dimensions.left)] ]
                            }
         lift = \imageLoaded -> Complete imageLoaded.coordinate imageLoaded.url
     in Html.div [ style [("width", px model.x), ("height", px model.y), ("overflow", "hidden")] ] [ App.map lift tiles ]
