@@ -22,5 +22,7 @@ elm-make src/LocatorDemo.elm --output build/demo-4.1.html
 elm-make src/XMarksTheSpot.elm --output build/demo-4.2.html
 to_html "rewriting_slippy_map_part_five.md" "five.html"
 elm-make src/CentreDemo.elm --output build/demo-5.1.html
+to_html "rewriting_slippy_map_part_six.md" "six.html"
+elm-make src/LocationTour.elm --output build/demo-6.1.html
 cp old-and-bad.html build/old-and-bad.html
 cp old-and-bad.js build/old-and-bad.js
