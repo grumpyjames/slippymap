@@ -19,7 +19,21 @@ type alias Model =
     , images : Dict (Int, Int) Url
     }
 
-model = Model (LatLn 48.858193 2.2940533) 712 466 Dict.empty
+type alias Place = 
+    { name: String
+    , latln: LatLn  
+    }
+
+laTourEiffel = Place "Eiffel Tower" (LatLn 48.8584 2.2945)
+
+places = 
+    [ Place "Sydney Opera House" (LatLn -33.8568 151.2153)
+    , Place "Statue of Liberty" (LatLn 40.6892 -74.0445)
+    , laTourEiffel
+    ]
+
+
+model = Model laTourEiffel.latln 712 466 Dict.empty
 
 type Msg 
     = Complete (Int, Int) Url
@@ -55,17 +69,6 @@ mapView model =
                            }
         lift = \imageLoaded -> Complete imageLoaded.coordinate imageLoaded.url
     in Html.div [ style [("width", px model.x), ("height", px model.y), ("overflow", "hidden")] ] [ App.map lift tiles ]
-
-type alias Place = 
-    { name: String
-    , latln: LatLn  
-    }
-
-places = 
-    [ Place "Sydney Opera House" (LatLn -33.8568 151.2153)
-    , Place "Statue of Liberty" (LatLn 40.6892 -74.0445)
-    , Place "Eiffel Tower" (LatLn 48.8584 2.2945)
-    ]
 
 buttons : Html Msg
 buttons = 
