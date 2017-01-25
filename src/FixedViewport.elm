@@ -18,8 +18,12 @@ type alias Dimensions =
     { rowCount: Int
     , columnCount: Int
     , origin: Tile
+    , height: Int
+    , width: Int
     , top: Int
     , left: Int
+    , zoom: Int
+    , tileSize: Int
     }
     
 calculateDimensions : Requirements -> Dimensions
@@ -33,9 +37,13 @@ calculateDimensions requirements =
     in
       { rowCount = rowCount
       , columnCount = columnCount
+      , height = requirements.height
+      , width = requirements.width
       , top = top
       , left = left
       , origin = origin
+      , zoom = requirements.zoom
+      , tileSize = requirements.tileSize
       } 
 
 calculateTileCount : Requirements -> (Int, Int)

@@ -1,6 +1,7 @@
 module CentreDemo exposing (main)
 
 import FixedViewport exposing (calculateDimensions, Requirements, Dimensions)
+import FixedViewportRenderer exposing (render)
 import LazyTiles exposing (loadingTileImages)
 import Locator exposing (LatLn, TileAddress, lookup)
 import Tiler
@@ -47,28 +48,14 @@ update message model =
       Goto latln ->
           { model | location = latln }
 
-fixedWidth : Int -> List (Html a) -> Html a
-fixedWidth tileSize htmls = 
-    let width = (List.length htmls) * tileSize
-    in Html.div [style [("width", (px width))]] htmls
-
-px : Int -> String
-px pixels = (toString pixels) ++ "px"
-
 mapView : Model -> Html Msg
 mapView model =
     let zoom = 15
         tileSize = 256
         dimensions = calculateDimensions (Requirements model.location zoom tileSize model.x model.y)
-        tiles = Tiler.tile { rowCount = dimensions.rowCount
-                           , columnCount = dimensions.columnCount
-                           , origin = dimensions.origin
-                           , viewTile = (loadingTileImages model.images)
-                           , viewRow = fixedWidth tileSize
-                           , outerAttributes = [ style [("position", "relative"), ("top", px dimensions.top), ("left", px dimensions.left)] ]
-                           }
+        map = render model.images dimensions 
         lift = \imageLoaded -> Complete imageLoaded.coordinate imageLoaded.url
-    in Html.div [ style [("width", px model.x), ("height", px model.y), ("overflow", "hidden")] ] [ App.map lift tiles ]
+    in App.map lift map
 
 buttons : Html Msg
 buttons = 
