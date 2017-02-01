@@ -33,7 +33,7 @@ calculateDimensions requirements =
         (centreTx, centreTy) = tileAddress.tile
         (left, top) = calculateOffsets requirements (columnCount, rowCount) tileAddress.pixelWithinTile
         origin = 
-            Tiler.Tile (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) requirements.zoom
+            Tiler.newTile (Tiler.TileSpec (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) requirements.zoom)
     in
       { rowCount = rowCount
       , columnCount = columnCount

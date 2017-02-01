@@ -19,19 +19,25 @@ type alias ImageLoaded =
 
 loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html ImageLoaded
 loadingTileImages cache tile =
-    let lookup = Dict.get (tile.x, tile.y) cache
+    let key = Tiler.fold tile (\x y z -> (x, y))
+        lookup = Dict.get key cache
     in 
       case lookup of
         Just url -> readyImage url
-        Nothing -> loadingImage (tile.x, tile.y) (imageUrl tile)
+        Nothing -> loadingImage key (imageUrl tile)
+
+accessToken = "pk.eyJ1IjoiZ3J1bXB5amFtZXMiLCJhIjoiNWQzZjdjMDY1YTI2MjExYTQ4ZWU4YjgwZGNmNjUzZmUifQ.BpRWJBEup08Z9DJzstigvg"
 
 imageUrl : Tiler.Tile -> Url
-imageUrl tile = 
-    "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/" 
-    ++ (toString tile.zoom) ++ "/"
-    ++ (toString tile.x) ++ "/"
-    ++ (toString tile.y) 
-    ++ ".png?access_token=pk.eyJ1IjoiZ3J1bXB5amFtZXMiLCJhIjoiNWQzZjdjMDY1YTI2MjExYTQ4ZWU4YjgwZGNmNjUzZmUifQ.BpRWJBEup08Z9DJzstigvg"
+imageUrl tile =
+    let toUrl x y z = 
+        "https://api.tiles.mapbox.com/v4/mapbox.run-bike-hike/" 
+        ++ (toString z) ++ "/"
+        ++ (toString x) ++ "/"
+        ++ (toString y) 
+        ++ ".png?access_token="
+        ++ accessToken
+    in Tiler.fold tile toUrl
 
 readyImage : Url -> Html ImageLoaded
 readyImage url =

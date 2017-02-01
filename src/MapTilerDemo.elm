@@ -9,7 +9,7 @@ import Html.Attributes exposing (style, src)
 import Json.Decode exposing (succeed)
 
 import LazyTiles exposing (imageUrl)
-import Tiler exposing (TilingInstruction)
+import Tiler exposing (TilingInstruction, TileSpec)
 import Url exposing (Url)
 
 type alias Model = 
@@ -30,11 +30,12 @@ type Msg = Complete (Int, Int) Url
 
 loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html Msg
 loadingTileImages cache tile =
-    let lookup = Dict.get (tile.x, tile.y) cache
+    let key = Tiler.fold tile (\x y z -> (x, y))
+        lookup = Dict.get key cache
     in 
       case lookup of
         Just url -> readyImage url
-        Nothing -> loadingImage (tile.x, tile.y) (imageUrl tile)
+        Nothing -> loadingImage key (imageUrl tile)
 
 readyImage : Url -> Html Msg
 readyImage url =
@@ -66,13 +67,13 @@ loadingImage coordinate url =
 model =
     { rowCount = 3
     , columnCount = 4
-    , origin = (Tiler.Tile 16380 10890 15)
+    , origin = (Tiler.newTile (TileSpec 16380 10890 15))
     , images = Dict.empty
     }
 
 shift : (Int, Int) -> Tiler.Tile -> Tiler.Tile
 shift (dx, dy) tile =
-    Tiler.Tile (tile.x + dx) (tile.y + dy) tile.zoom 
+    Tiler.fold tile (\x y z -> Tiler.newTile (TileSpec (x + dx) (y + dy) z)) 
 
 update : Msg -> Model -> Model
 update message model =

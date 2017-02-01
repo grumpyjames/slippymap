@@ -11,10 +11,11 @@ type Msg = NoOp
 
 describe : Tiler.Tile -> Html Msg
 describe tile =
-    Html.text ("(" ++ (toString tile.x) ++ ", " ++ (toString tile.y) ++ ")") 
+    let f x y z = Html.text ("(" ++ (toString x) ++ ", " ++ (toString y) ++ ")") 
+    in Tiler.fold tile f
 
 model =
-    TilingInstruction 3 5 (Tiler.Tile 3 5) describe (\htmls -> Html.div [] htmls) []
+    TilingInstruction 3 5 (Tiler.newTile (Tiler.TileSpec 3 5 0)) describe (\htmls -> Html.div [] htmls) []
 
 update : Msg -> Model -> Model
 update message model = model
