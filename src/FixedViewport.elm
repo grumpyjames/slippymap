@@ -4,7 +4,7 @@ module FixedViewport exposing
     , calculateDimensions)
 
 import Locator exposing (LatLn, TileAddress, lookup)
-import Tiler exposing (Tile)
+import Tiler exposing (TileSpec)
 
 type alias Requirements = 
     { centre: LatLn
@@ -17,7 +17,7 @@ type alias Requirements =
 type alias Dimensions =
     { rowCount: Int
     , columnCount: Int
-    , origin: Tile
+    , origin: TileSpec
     , height: Int
     , width: Int
     , top: Int
@@ -33,7 +33,7 @@ calculateDimensions requirements =
         (centreTx, centreTy) = tileAddress.tile
         (left, top) = calculateOffsets requirements (columnCount, rowCount) tileAddress.pixelWithinTile
         origin = 
-            Tiler.newTile (Tiler.TileSpec (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) requirements.zoom)
+            Tiler.TileSpec (centreTx - (columnCount // 2)) (centreTy - (rowCount // 2)) requirements.zoom
     in
       { rowCount = rowCount
       , columnCount = columnCount

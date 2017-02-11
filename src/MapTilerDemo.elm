@@ -8,14 +8,14 @@ import Html.Attributes exposing (style, src)
 
 import Json.Decode exposing (succeed)
 
-import LazyTiles exposing (imageUrl)
+import LazyTiles exposing (loadingTileImages)
 import Tiler exposing (TilingInstruction, TileSpec)
 import Url exposing (Url)
 
 type alias Model = 
     { rowCount: Int
     , columnCount: Int
-    , origin: Tiler.Tile
+    , origin: Tiler.TileSpec
     , images : Dict (Int, Int) Url
     }
 
@@ -28,52 +28,16 @@ type Direction
 type Msg = Complete (Int, Int) Url
          | Shift Direction
 
-loadingTileImages : Dict (Int, Int) Url -> Tiler.Tile -> Html Msg
-loadingTileImages cache tile =
-    let key = Tiler.fold tile (\x y z -> (x, y))
-        lookup = Dict.get key cache
-    in 
-      case lookup of
-        Just url -> readyImage url
-        Nothing -> loadingImage key (imageUrl tile)
-
-readyImage : Url -> Html Msg
-readyImage url =
-    let attrs = [ src url, style [ ( "float", "left" ) ] ]
-    in img attrs [] 
-
-loadingImage : (Int, Int) -> Url -> Html Msg
-loadingImage coordinate url =
-    let 
-        divStyles =
-            style [ ("width", "256px")
-                  , ("height", "256px")
-                  , ("float", "left")
-                  , ("display", "flex")
-                  ]
-        loadingGifAttrs = 
-            [ src "loading.gif"
-            , style [ ( "float", "left" )
-                    , ( "display", "block")
-                    , ( "margin", "auto") ]
-            ]
-        loadingImageAttrs = 
-            [ src url
-            , style [ ("display", "none" ) ]
-            , onWithOptions "load" (Options False False) (succeed (Complete coordinate url))
-            ]
-    in node "div" [divStyles] [(img loadingGifAttrs []), (img loadingImageAttrs [])]
-
 model =
     { rowCount = 3
     , columnCount = 4
-    , origin = (Tiler.newTile (TileSpec 16380 10890 15))
+    , origin = (TileSpec 16380 10890 15)
     , images = Dict.empty
     }
 
-shift : (Int, Int) -> Tiler.Tile -> Tiler.Tile
+shift : (Int, Int) -> Tiler.TileSpec -> Tiler.TileSpec
 shift (dx, dy) tile =
-    Tiler.fold tile (\x y z -> Tiler.newTile (TileSpec (x + dx) (y + dy) z)) 
+    TileSpec (tile.x + dx) (tile.y + dy) tile.zoom 
 
 update : Msg -> Model -> Model
 update message model =
@@ -97,7 +61,7 @@ fixedWidth htmls =
 
 view : Model -> Html Msg
 view m =
-    let tiles = 
+    let rawTiles = 
             Tiler.tile { rowCount = m.rowCount
                        , columnCount = m.columnCount
                        , origin = m.origin
@@ -105,6 +69,7 @@ view m =
                        , viewRow = fixedWidth
                        , outerAttributes = []
                        }
+        tiles = App.map (\imageLoaded -> Complete imageLoaded.coordinate imageLoaded.url) rawTiles
     in Html.div [] [controls, tiles]
 
 controls : Html Msg
